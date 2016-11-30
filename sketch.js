@@ -1,28 +1,49 @@
-//var json;
 var APIkey = "&api-key=72c17cbc6ade401a8b2a6a143be9e219";
 var url = "https://api.nytimes.com/svc/movies/v2/reviews/search.json";
-var query = "?critics-pick=Y&opening-date=2016-11-01;2016-11-30";
+var query = "?critics-pick=Y&opening-date=2016-11-01;2016-11-30";        
 
+var data;
+
+var visual = [];
+var decFactor = -5;
+
+function preload() {
+  data = loadJSON(url + query + APIkey);
+
+}
 
 function setup() {
-  loadJSON(url + query + APIkey, getData);
   createCanvas(500, 500);
+  var movies = data.results;
+  for (var i = 0; i < movies.length; i++) {
+    visual[i] = new Visualization(random(0.1, 5), random(width), random(height));
+  }
+  //noLoop();
+}
+
+function draw() {
   background(200, 215, 150);
 
-}
+  var movies = data.results
 
-function getData(data) {
-  //var movies = data.results[0].display_title;
-  var movies = data.results;
-  //console.log(movies);
-  //var titles = [];
-
-  for (var i = 0; i < movies.length; i++) {
-    movies[i].display_title;
-    console.log(movies[i].display_title);
-    // titles.push(movies[i].display_title);
-    fill(0);
-    text(movies[i].display_title, random(width), random(height));
+  for (var i = 0; i < visual.length; i++) {
+    //console.log(visual.length);
+    var rand = 0.05;
+    var gravity = 0.1;
+    fill(visual[i].c);
+    visual[i].create();
+    visual[i].horizMotion();
+    visual[i].vertMotion(gravity);
+    visual[i].vertMotion(rand);
+    visual[i].update();
+    if (keyIsPressed){
+      if (key == 'g'){
+          visual[i].group(width/2, height/2);
+      }
+    }
+    visual[i].edges();
   }
 
+
 }
+
